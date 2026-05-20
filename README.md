@@ -55,5 +55,5 @@ API:
 Clone repository:
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/weather-app.git
+git clone https://github.com/bensiuu/weather-app.git
 cd weather-app
