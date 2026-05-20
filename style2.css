@@ -1,0 +1,78 @@
+body{
+    transition: 0.3s;
+    font-family: Arial;
+}
+.day{
+    background: rgb(155, 210, 231);
+}
+
+.night{
+    background: rgb(12, 20, 69);
+    color: white;
+}
+
+#main{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 40px;
+}
+
+#temp{
+    color: rgb(80, 255, 146);
+    font-size: 50px;
+}
+#icon{
+    width: 64px;
+}
+#condition{
+    font-size: 24px;
+}
+input{
+    padding: 10px;
+    border-radius: 10px;
+    border: 2px solid black;
+    font-size: 18px;
+}
+
+button{
+    margin: 5px;
+    padding: 10px 15px;
+    border-radius: 12px;
+    border: 2px solid white;
+    background: rgba(255,255,255,0.7);
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+button:hover{
+    transform: scale(1.05);
+}
+
+.active{
+    background: white;
+}
+
+#forecast{
+    margin-top: 20px;
+}
+#weather-info{
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    justify-content: auto;
+    margin-top: 20px;
+}
+#hour-row{
+    display: flex;
+    justify-content: center;
+    justify-self: center;
+    gap: 20px;
+}
+#wpisywanie{
+    display: flex;
+    justify-items: center;
+    justify-content: center;
+    justify-self: center;
+    gap: 20px;
+}

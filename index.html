@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="icon.jpg">
+    <link rel="stylesheet" href="style.css">
+    <title>Weather App</title>
+</head>
+
+<body class="night">
+    <div id="app">
+    <div id="wpisywanie">
+        <h2 id="question">Podaj miasto</h2>
+        <input 
+        type="text" 
+        id="city" 
+        name="cityinput" 
+        onkeydown="checkEnter(event)"
+        placeholder="Enter city..."
+        >
+        <button id="location-btn" onclick="getLocationWeather()">📍</button>
+    </div>
+    <div id="weather-info">
+        <h2 id="temp"></h2>
+        <h1 id="condition"></h1>
+        <img id="icon">
+    </div>
+    <div id="forecast"></div>
+    <div id="hour-info"></div>
+    
+    <script>
+        let fullforecast = []
+        async function getLocationWeather() {
+            if (!navigator.geolocation) {
+                alert("Geolocation is not supported")
+                return
+                }
+
+            navigator.geolocation.getCurrentPosition(
+            async(position) => {
+
+            const lat = position.coords.latitude
+            const lon = position.coords.longitude
+
+            try {
+
+                // get city name from coordinates
+                const geoResponse = await fetch(
+                    `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`
+                );
+
+                const geoData = await geoResponse.json()
+
+                const city =
+                    geoData.address.city ||
+                    geoData.address.town ||
+                    geoData.address.village
+
+                document.getElementById("city").value = city
+                keyboardEvent = new KeyboardEvent("keydown", { key: "Enter" })
+                document.getElementById("city").dispatchEvent(keyboardEvent)
+                
+
+            } catch(error) {
+                console.log(error)
+                alert("Could not detect location")
+            }
+
+        },
+        (error) => {
+            console.log(error)
+            alert("Location access denied")
+            }
+        )
+        }       
+        async function getweather(){
+            const city = document.getElementById("city").value 
+            console.log(city)
+            const response = await fetch(`http://127.0.0.1:8000/weather/${city}`)
+            const data = await response.json()
+            if(data.is_day == 1){
+                document.body.className = "day"
+            }
+            else{
+                document.body.className = "night"
+            }
+            document.getElementById("weather-info").style.display = "flex";
+            document.getElementById("forecast").style.display = "grid";
+
+            document.getElementById("condition").innerText = data.condition
+            document.getElementById("temp").innerText = data.temperature + "°C   "
+            document.getElementById("icon").src = "http:" + data.icon
+            const foreresponse = await fetch(`http://127.0.0.1:8000/forecast/${city}`)
+            const foredata = await foreresponse.json()
+            let foreHTML = ""
+            
+            fullforecast = foredata
+            foredata.forEach((hour,index) => {
+                foreHTML += `
+                <button onclick="showhour(${index})">
+                    ${hour.time.split(" ")[1]}
+                </button>
+                `
+            })
+            document.getElementById("forecast").innerHTML = foreHTML
+        }
+        function showhour(index){
+                document.getElementById("hour-info").style.display = "block";
+                const hour = fullforecast[index]
+                console.log(fullforecast[index])
+                document.getElementById("hour-info").innerHTML = 
+                `
+                    <div id="hour-row">
+                    <h1>${hour.temperature}°C</h1>
+
+                    <div class="divider"></div>
+
+                    <h1>${hour.text}</h1>
+
+                    <div class="divider"></div>
+
+                    <h1>rain: ${hour.chance_of_rain}%</h1>
+
+                    </div>
+                `
+            }
+        function checkEnter(event){
+            if(event.key == "Enter")
+                getweather()
+        }
+
+    </script>
+</body>
+</html>
